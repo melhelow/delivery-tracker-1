@@ -30,25 +30,50 @@
   </div>
 <% end %>
 
+
 <div class="waiting_on">
   <h2>Waiting on</h2>
 
-  <% @list_of_deliveries.select { |d| d.received == false }.each do |delivery| %>
-    <div class="waiting-delivery">
-      <p>Description: <strong><%= delivery.description %></strong></p>
-      <p>Supposed to arrive on <%= delivery.expected_on.to_s %></p>
-      <p>Status: Waiting</p>
+  <% waiting = @list_of_deliveries.select { |d| d.received == false } %>
+  <% if waiting.any? %>
+    <% waiting.each do |delivery| %>
+      <div class="waiting-delivery">
+        <p>Description: <strong><%= delivery.description %></strong></p>
+        <p>Supposed to arrive on <%= delivery.expected_on.to_s %></p>
+        <p>Status: Waiting</p>
 
-      <%= form_tag("/modify_delivery/#{delivery.id}") do %>
-        <%= hidden_field_tag :query_description, delivery.description %>
-        <%= hidden_field_tag :query_expected_on, delivery.expected_on %>
-        <%= hidden_field_tag :query_details, delivery.details %>
-        <%= hidden_field_tag :query_user_id, delivery.user_id %>
-        <%= hidden_field_tag :query_received, true %>
+        <%= form_tag("/modify_delivery/#{delivery.id}") do %>
+          <%= hidden_field_tag :query_description, delivery.description %>
+          <%= hidden_field_tag :query_expected_on, delivery.expected_on %>
+          <%= hidden_field_tag :query_details, delivery.details %>
+          <%= hidden_field_tag :query_user_id, delivery.user_id %>
+          <%= hidden_field_tag :query_received, true %>
 
-        <button type="submit">Mark as received</button>
-      <% end %>
-    </div>
+          <button type="submit">Mark as received</button>
+        <% end %>
+      </div>
+    <% end %>
+  <% else %>
+    <p>No pending deliveries.</p>
+  <% end %>
+</div>
+
+
+<div class="received">
+  <h2>Received</h2>
+
+  <% received = @list_of_deliveries.select { |d| d.received == true } %>
+  <% if received.any? %>
+    <% received.each do |delivery| %>
+      <div class="received-delivery">
+        <p>Description: <strong><%= delivery.description %></strong></p>
+        <p>Status: Received</p>
+
+        <%= link_to "Delete", "/delete_delivery/#{delivery.id}", method: :delete, data: { confirm: "Are you sure?" } %>
+      </div>
+    <% end %>
+  <% else %>
+    <p>No received deliveries yet.</p>
   <% end %>
 </div>
 

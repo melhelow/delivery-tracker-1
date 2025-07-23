@@ -1,13 +1,20 @@
 <h1>Delivery Tracker</h1>
-
-<%= link_to "Edit profile", edit_user_registration_path %> |
-<%= link_to "Sign out", destroy_user_session_path, method: :delete %>
-
-<h2>Expecting a package?</h2>
 <p>Know if something gets lost in the mail.</p>
 
+<hr>
 
-<%= form_tag("/insert_delivery") do %>
+
+<h2>Expecting a package?</h2>
+
+<% if notice.present? %>
+  <div class="alert alert-success"><%= notice %></div>
+<% end %>
+<% if alert.present? %>
+  <div class="alert alert-danger"><%= alert %></div>
+<% end %>
+
+<%= form_tag("/insert_delivery", method: :post) do %>
+
   <div>
     <label for="description">Description</label>
     <%= text_field_tag(:query_description, nil, id: "description") %>
@@ -23,71 +30,56 @@
     <%= text_area_tag(:query_details, nil, id: "details") %>
   </div>
 
-  <%= hidden_field_tag :query_user_id, current_user.id %>
-
   <div>
     <button type="submit">Log delivery</button>
   </div>
 <% end %>
 
+<hr>
 
 <div class="waiting_on">
   <h2>Waiting on</h2>
 
-  <% waiting = @list_of_deliveries.select { |d| d.received == false } %>
-  <% if waiting.any? %>
-    <% waiting.each do |delivery| %>
-      <div class="waiting-delivery">
-        <p>Description: <strong><%= delivery.description %></strong></p>
-        <p>Supposed to arrive on <%= delivery.expected_on.to_s %></p>
-        <p>Status: Waiting</p>
+  <ul>
+   <% @list_of_deliveries.select { |d| !d.received }.each do |delivery| %>
+      <li>
+        <div><%= delivery.description %></div>
+        <div>
+          Supposed to arrive on
+          <%= delivery.expected_on.strftime("%Y-%m-%d") %>
+        </div>
 
-        <%= form_tag("/modify_delivery/#{delivery.id}") do %>
-          <%= hidden_field_tag :query_description, delivery.description %>
-          <%= hidden_field_tag :query_expected_on, delivery.expected_on %>
-          <%= hidden_field_tag :query_details, delivery.details %>
-          <%= hidden_field_tag :query_user_id, delivery.user_id %>
-          <%= hidden_field_tag :query_received, true %>
+        <div><%= delivery.details %></div>
 
-          <button type="submit">Mark as received</button>
-        <% end %>
-      </div>
+        <div>
+          <%= form_with url: "/modify_delivery/#{delivery.id}", method: :post, local: true do |form| %>
+            <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+            <%= hidden_field_tag :received, true %>
+            <button type="submit">Mark as received</button>
+          <% end %>
+        </div>
+      </li>
     <% end %>
-  <% else %>
-    <p>No pending deliveries.</p>
-  <% end %>
+  </ul>
 </div>
 
+<hr>
 
 <div class="received">
   <h2>Received</h2>
 
-  <% received = @list_of_deliveries.select { |d| d.received == true } %>
+  <% received = @list_of_deliveries.select { |d| d.received } %>
   <% if received.any? %>
-    <% received.each do |delivery| %>
-      <div class="received-delivery">
-        <p>Description: <strong><%= delivery.description %></strong></p>
-        <p>Status: Received</p>
-
-        <%= link_to "Delete", "/delete_delivery/#{delivery.id}", method: :delete, data: { confirm: "Are you sure?" } %>
-      </div>
-    <% end %>
+   <ul>
+  <% received.each do |delivery| %>
+    <li>
+      <div><%= delivery.description %></div>
+      <div>Arrived on: <%= delivery.updated_at.strftime("%Y-%m-%d") %></div>
+      <%= link_to "Delete", "/delete_delivery/#{delivery.id}", method: :delete, data: { confirm: "Are you sure?" } %>
+    </li>
+  <% end %>
+</ul>
   <% else %>
     <p>No received deliveries yet.</p>
-  <% end %>
-</div>
-
-
-
-<div class="received">
-  <h2>Received</h2>
-
-  <% @list_of_deliveries.select { |d| d.received == true }.each do |delivery| %>
-    <div class="received-delivery">
-      <p>Description: <strong><%= delivery.description %></strong></p>
-      <p>Status: Received</p>
-
-      <%= link_to "Delete", "/delete_delivery/#{delivery.id}", method: :delete, data: { confirm: "Are you sure?" } %>
-    </div>
   <% end %>
 </div>

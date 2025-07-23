@@ -2,14 +2,15 @@
 #
 # Table name: deliveries
 #
-#  id          :bigint           not null, primary key
-#  description :string
-#  details     :text
-#  expected_on :date
-#  received    :boolean
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
-#  user_id     :bigint           not null
+#  id                    :bigint           not null, primary key
+#  description           :string
+#  details               :text
+#  expected_on           :date
+#  received              :boolean
+#  supposed_to_arrive_on :date
+#  created_at            :datetime         not null
+#  updated_at            :datetime         not null
+#  user_id               :bigint           not null
 #
 # Indexes
 #

@@ -8,7 +8,8 @@ Rails.application.routes.draw do
   # Custom routes for Deliveries CRUD
 
   # CREATE
-  post "/insert_delivery", to: "deliveries#create"
+  post '/insert_delivery', to: 'deliveries#create'
+
 
   # READ
   get("/deliveries", { :controller => "deliveries", :action => "index" })
@@ -18,6 +19,6 @@ Rails.application.routes.draw do
   post "/modify_delivery/:path_id", to: "deliveries#update"
 
   # DELETE
-  get "/delete_delivery/:path_id", to: "deliveries#destroy"
+  delete "/delete_delivery/:path_id", to: "deliveries#destroy"
 
 end

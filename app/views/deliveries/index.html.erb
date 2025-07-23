@@ -3,7 +3,7 @@
 <h2>Expecting a package?</h2>
 <p>Know if something gets lost in the mail.</p>
 
-<!-- Form to log a new delivery -->
+
 <%= form_tag("/insert_delivery") do %>
   <div>
     <label for="description">Description</label>
@@ -38,8 +38,8 @@
 
  <% @list_of_deliveries.select { |d| !d.received }.each do |delivery| %>
   <div>
-    <p><strong><%= delivery.description %></strong></p>
-    <p>Expected on: <%= delivery.expected_on %></p>
+        <p><strong><%= delivery.description %></strong></p>
+      <p>Expected on: <%= delivery.expected_on.strftime("%B %d, %Y") %></p>
     <%= form_with url: "/modify_delivery/#{delivery.id}", method: :post do %>
       <%= hidden_field_tag :query_received, true %>
       <%= hidden_field_tag :query_description, delivery.description %>

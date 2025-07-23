@@ -4,6 +4,7 @@
 #
 #  id          :bigint           not null, primary key
 #  description :string
+#  details     :text
 #  expected_on :date
 #  received    :boolean
 #  created_at  :datetime         not null

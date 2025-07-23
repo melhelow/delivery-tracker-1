@@ -36,19 +36,22 @@
 <div class="waiting_on">
   <h2>Waiting on</h2>
 
- <% @list_of_deliveries.select { |d| !d.received }.each do |delivery| %>
-  <div>
-        <p><strong><%= delivery.description %></strong></p>
+  <% @list_of_deliveries.select { |d| !d.received }.each do |delivery| %>
+    <div>
+      <p><strong><%= delivery.description %></strong></p>
       <p>Expected on: <%= delivery.expected_on.strftime("%B %d, %Y") %></p>
-    <%= form_with url: "/modify_delivery/#{delivery.id}", method: :post do %>
-      <%= hidden_field_tag :query_received, true %>
-      <%= hidden_field_tag :query_description, delivery.description %>
-      <%= hidden_field_tag :query_expected_on, delivery.expected_on %>
-      <%= hidden_field_tag :query_user_id, delivery.user_id %>
-      <button type="submit">Mark as received</button>
-    <% end %>
-  </div>
-<% end %>
+
+      <%= form_with url: "/modify_delivery/#{delivery.id}", method: :post do %>
+        <%= hidden_field_tag :query_description, delivery.description %>
+        <%= hidden_field_tag :query_expected_on, delivery.expected_on %>
+        <%= hidden_field_tag :query_received, true %>
+        <%= hidden_field_tag :query_user_id, delivery.user_id %>
+        <button type="submit">Mark as received</button>
+      <% end %>
+    </div>
+  <% end %>
+</div>
+
 
 <div class="received">
   <h2>Received</h2>

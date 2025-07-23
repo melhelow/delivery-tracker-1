@@ -1,0 +1,116 @@
+<div>
+  <div>
+    <h1>
+      Delivery #<%= @the_delivery.id %> details
+    </h1>
+
+    <div>
+      <div>
+        <a href="/deliveries">
+          Go back
+        </a>
+      </div>
+
+      <div>
+        <a href="/delete_delivery/<%= @the_delivery.id %>">
+          Delete delivery
+        </a>
+      </div>
+    </div>
+
+    <dl>
+      <dt>
+        Description
+      </dt>
+      <dd>
+        <%= @the_delivery.description %>
+      </dd>
+
+      <dt>
+        Expected on
+      </dt>
+      <dd>
+        <%= @the_delivery.expected_on %>
+      </dd>
+
+      <dt>
+        Received
+      </dt>
+      <dd>
+        <%= @the_delivery.received %>
+      </dd>
+
+      <dt>
+        User
+      </dt>
+      <dd>
+        <%= @the_delivery.user_id %>
+      </dd>
+
+      <dt>
+        Created at
+      </dt>
+      <dd>
+        <%= time_ago_in_words(@the_delivery.created_at) %> ago
+      </dd>
+
+      <dt>
+        Updated at
+      </dt>
+      <dd>
+        <%= time_ago_in_words(@the_delivery.updated_at) %> ago
+      </dd>
+    </dl>
+  </div>
+</div>
+
+<hr>
+
+
+<div>
+  <div>
+    <h2>
+      Edit delivery
+    </h2>
+
+    <form action="/modify_delivery/<%= @the_delivery.id %>"  method="post" >
+      <div>
+        <label for="description_box">
+          Description
+        </label>
+
+        <input type="text" id="description_box" name="query_description" value="<%= @the_delivery.description %>">
+      </div>
+
+      <div>
+        <label for="expected_on_box">
+          Expected on
+        </label>
+
+        <input type="date" id="expected_on_box" name="query_expected_on" value="<%= @the_delivery.expected_on %>">
+      </div>
+
+      <div>
+        <input type="checkbox" id="received_box" name="query_received" value="1" <%= "checked" if @the_delivery.received %>>
+
+        <label for="received_box">
+            Received
+        </label>
+      </div>
+
+      <div>
+        <label for="user_id_box">
+          User
+        </label>
+
+        <input type="text" id="user_id_box" name="query_user_id" value="<%= @the_delivery.user_id %>">
+      </div>
+
+      <button>
+        Update delivery
+      </button>
+    </form>
+  </div>
+</div>
+
+<hr>

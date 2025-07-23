@@ -1,132 +1,67 @@
-<div>
+<h1>Delivery Tracker</h1>
+
+<h2>Expecting a package?</h2>
+<p>Know if something gets lost in the mail.</p>
+
+<!-- Form to log a new delivery -->
+<%= form_tag("/insert_delivery") do %>
   <div>
-    <h1>
-      List of all deliveries
-    </h1>
+    <label for="description">Description</label>
+    <%= text_field_tag(:query_description, nil, id: "description") %>
   </div>
-</div>
 
-<hr>
-
-<div>
   <div>
-    <h2>
-      Add a new delivery
-    </h2>
-
-    <form action="/insert_delivery" method="post">
-      <div>
-        <label for="description_box">
-          Description
-        </label>
-
-        <input type="text" id="description_box" name="query_description">
-      </div>
-
-      <div>
-        <label for="expected_on_box">
-          Expected on
-        </label>
-
-        <input type="date" id="expected_on_box" name="query_expected_on">
-      </div>
-
-      <div>
-        <input type="checkbox" id="received_box" name="query_received" value="1">
-
-        <label for="received_box">Received</label>
-      </div>
-
-      <div>
-        <label for="user_id_box">
-          User
-        </label>
-
-        <input type="text" id="user_id_box" name="query_user_id">
-      </div>
-
-      <button>
-        Create delivery
-      </button>
-    </form>
+    <label for="expected_on">Supposed to arrive on</label>
+    <%= date_field_tag(:query_expected_on, nil, id: "expected_on") %>
   </div>
-</div>
 
-<hr>
-<div>
   <div>
-    <table border="1">
-      <tr>
-        <th>
-          ID
-        </th>
-
-        <th>
-          Description
-        </th>
-
-        <th>
-          Expected on
-        </th>
-
-        <th>
-          Received
-        </th>
-
-        <th>
-          User
-        </th>
-
-        <th>
-          Created at
-        </th>
-
-        <th>
-          Updated at
-        </th>
-
-        <th>
-        </th>
-      </tr>
-
-      <% @list_of_deliveries.each do |a_delivery| %>
-      <tr>
-        <td>
-          <%= a_delivery.id %>
-        </td>
-
-        <td>
-          <%= a_delivery.description %>
-        </td>
-
-        <td>
-          <%= a_delivery.expected_on %>
-        </td>
-
-        <td>
-          <%= a_delivery.received %>
-        </td>
-
-        <td>
-          <%= a_delivery.user_id %>
-        </td>
-
-        <td>
-          <%= time_ago_in_words(a_delivery.created_at) %> ago
-        </td>
-        <td>
-          <%= time_ago_in_words(a_delivery.updated_at) %> ago
-        </td>
-
-        <td>
-          <a href="/deliveries/<%= a_delivery.id %>">
-            Show details
-          </a>
-        </td>
-      </tr>
-      <% end %>
-    </table>
+    <label for="details">Details</label>
+    <%= text_area_tag(:query_details, nil, id: "details") %>
   </div>
-</div>
 
-<hr>
+  <%= hidden_field_tag :query_user_id, current_user.id %>
+
+  <div>
+    <button type="submit">Log delivery</button>
+  </div>
+<% end %>
+
+
+<% if flash[:notice] %>
+  <p><%= flash[:notice] %></p>
+<% end %>
+
+
+<div class="waiting_on">
+  <h2>Waiting on</h2>
+
+ <% @list_of_deliveries.select { |d| !d.received }.each do |delivery| %>
+  <div>
+    <p><strong><%= delivery.description %></strong></p>
+    <p>Expected on: <%= delivery.expected_on %></p>
+    <%= form_with url: "/modify_delivery/#{delivery.id}", method: :post do %>
+      <%= hidden_field_tag :query_received, true %>
+      <%= hidden_field_tag :query_description, delivery.description %>
+      <%= hidden_field_tag :query_expected_on, delivery.expected_on %>
+      <%= hidden_field_tag :query_user_id, delivery.user_id %>
+      <button type="submit">Mark as received</button>
+    <% end %>
+  </div>
+<% end %>
+
+<div class="received">
+  <h2>Received</h2>
+
+  <% @list_of_deliveries.select { |d| d.received }.each do |delivery| %>
+    <div>
+      <p><strong><%= delivery.description %></strong></p>
+      <p>Expected on: <%= delivery.expected_on %></p>
+      
+     
+      <a href="/delete_delivery/<%= delivery.id %>" data-method="get" rel="nofollow" onclick="return confirm('Are you sure?')">
+        Delete
+      </a>
+    </div>
+  <% end %>
+</div>

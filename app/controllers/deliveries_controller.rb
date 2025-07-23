@@ -17,20 +17,21 @@ class DeliveriesController < ApplicationController
     render({ :template => "deliveries/show" })
   end
 
-  def create
-    the_delivery = Delivery.new
-    the_delivery.description = params.fetch("query_description")
-    the_delivery.expected_on = params.fetch("query_expected_on")
-    the_delivery.received = params.fetch("query_received", false)
-    the_delivery.user_id = params.fetch("query_user_id")
+def create
+  the_delivery = Delivery.new
+  the_delivery.description = params.fetch("query_description")
+  the_delivery.expected_on = params.fetch("query_expected_on")
+  the_delivery.received = params.fetch("query_received", false)
+  the_delivery.user_id = params.fetch("query_user_id")
 
-    if the_delivery.valid?
-      the_delivery.save
-      redirect_to("/deliveries", { :notice => "Delivery created successfully." })
-    else
-      redirect_to("/deliveries", { :alert => the_delivery.errors.full_messages.to_sentence })
-    end
+  if the_delivery.valid?
+    the_delivery.save
+    redirect_to("/deliveries", { notice: "Added to list" })   # <-- exact message expected by test
+  else
+    redirect_to("/deliveries", { alert: the_delivery.errors.full_messages.to_sentence })
   end
+end
+
 
   def update
     the_id = params.fetch("path_id")

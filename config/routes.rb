@@ -1,26 +1,22 @@
 Rails.application.routes.draw do
-  # Routes for the Delivery resource:
+  # Authentication routes
+  devise_for :users
+
+  # Home page should show deliveries
+  root "deliveries#index"
+
+  # Custom routes for Deliveries CRUD
 
   # CREATE
   post("/insert_delivery", { :controller => "deliveries", :action => "create" })
-          
+
   # READ
   get("/deliveries", { :controller => "deliveries", :action => "index" })
-  
   get("/deliveries/:path_id", { :controller => "deliveries", :action => "show" })
-  
+
   # UPDATE
-  
   post("/modify_delivery/:path_id", { :controller => "deliveries", :action => "update" })
-  
+
   # DELETE
   get("/delete_delivery/:path_id", { :controller => "deliveries", :action => "destroy" })
-
-  #------------------------------
-
-  devise_for :users
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-
-  # Defines the root path route ("/")
-  # root "articles#index"
 end

@@ -4,6 +4,11 @@
 <p>Know if something gets lost in the mail.</p>
 
 
+<% if flash[:notice] %>
+  <p><%= flash[:notice] %></p>
+<% end %>
+
+
 <%= form_tag("/insert_delivery") do %>
   <div>
     <label for="description">Description</label>
@@ -28,11 +33,6 @@
 <% end %>
 
 
-<% if flash[:notice] %>
-  <p><%= flash[:notice] %></p>
-<% end %>
-
-
 <div class="waiting_on">
   <h2>Waiting on</h2>
 
@@ -41,9 +41,10 @@
       <p><strong><%= delivery.description %></strong></p>
       <p>Expected on: <%= delivery.expected_on.strftime("%B %d, %Y") %></p>
 
-      <%= form_with url: "/modify_delivery/#{delivery.id}", method: :post do %>
+      <%= form_tag("/modify_delivery/#{delivery.id}", method: :post) do %>
         <%= hidden_field_tag :query_description, delivery.description %>
         <%= hidden_field_tag :query_expected_on, delivery.expected_on %>
+        <%= hidden_field_tag :query_details, delivery.details %>
         <%= hidden_field_tag :query_received, true %>
         <%= hidden_field_tag :query_user_id, delivery.user_id %>
         <button type="submit">Mark as received</button>
@@ -63,4 +64,3 @@
     </div>
   <% end %>
 </div>
-

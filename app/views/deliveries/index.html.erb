@@ -59,12 +59,8 @@
   <% @list_of_deliveries.select { |d| d.received }.each do |delivery| %>
     <div>
       <p><strong><%= delivery.description %></strong></p>
-      <p>Expected on: <%= delivery.expected_on %></p>
-      
-     
-      <a href="/delete_delivery/<%= delivery.id %>" data-method="get" rel="nofollow" onclick="return confirm('Are you sure?')">
-        Delete
-      </a>
+      <a href="/delete_delivery/<%= delivery.id %>">Delete</a>
     </div>
   <% end %>
 </div>
+

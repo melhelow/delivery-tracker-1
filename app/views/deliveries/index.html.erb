@@ -1,14 +1,12 @@
 <h1>Delivery Tracker</h1>
 
+<%= link_to "Edit profile", edit_user_registration_path %> |
+<%= link_to "Sign out", destroy_user_session_path, method: :delete %>
+
 <h2>Expecting a package?</h2>
 <p>Know if something gets lost in the mail.</p>
 
-
-<% if flash[:notice] %>
-  <p><%= flash[:notice] %></p>
-<% end %>
-
-
+<!-- Form to log a new delivery -->
 <%= form_tag("/insert_delivery") do %>
   <div>
     <label for="description">Description</label>
@@ -32,35 +30,37 @@
   </div>
 <% end %>
 
-
+<!-- Waiting On Section -->
 <div class="waiting_on">
   <h2>Waiting on</h2>
 
-  <% @list_of_deliveries.select { |d| !d.received }.each do |delivery| %>
+  <% @list_of_deliveries.select { |d| d.received == false }.each do |delivery| %>
     <div>
       <p><strong><%= delivery.description %></strong></p>
-      <p>Expected on: <%= delivery.expected_on.strftime("%B %d, %Y") %></p>
+      <p>Expected on: <%= delivery.expected_on %></p>
 
-      <%= form_tag("/modify_delivery/#{delivery.id}", method: :post) do %>
+      <%= form_tag("/modify_delivery/#{delivery.id}") do %>
         <%= hidden_field_tag :query_description, delivery.description %>
         <%= hidden_field_tag :query_expected_on, delivery.expected_on %>
         <%= hidden_field_tag :query_details, delivery.details %>
-        <%= hidden_field_tag :query_received, true %>
         <%= hidden_field_tag :query_user_id, delivery.user_id %>
+        <%= hidden_field_tag :query_received, true %>
+
         <button type="submit">Mark as received</button>
       <% end %>
     </div>
   <% end %>
 </div>
 
-
+<!-- Received Section -->
 <div class="received">
   <h2>Received</h2>
 
-  <% @list_of_deliveries.select { |d| d.received }.each do |delivery| %>
+  <% @list_of_deliveries.select { |d| d.received == true }.each do |delivery| %>
     <div>
       <p><strong><%= delivery.description %></strong></p>
-      <a href="/delete_delivery/<%= delivery.id %>">Delete</a>
+
+      <%= link_to "Delete", "/delete_delivery/#{delivery.id}" %>
     </div>
   <% end %>
 </div>

@@ -8,9 +8,25 @@
 
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+    
   </head>
 
   <body>
+
+  <nav>
+  <%= link_to "Delivery Tracker", "/deliveries" %> |
+  <%= link_to "Edit profile", edit_user_registration_path %> |
+  <%= link_to "Sign out", destroy_user_session_path, method: :delete %>
+</nav>
+<% if flash[:notice] %>
+  <p class="flash notice"><%= flash[:notice] %></p>
+<% end %>
+
+<% if flash[:alert] %>
+  <p class="flash alert"><%= flash[:alert] %></p>
+<% end %>
+
+ <hr>
     <%= yield %>
   </body>
 </html>
